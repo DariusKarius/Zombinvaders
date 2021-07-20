@@ -1,0 +1,86 @@
+from pygame import *
+import sys
+ancho = 800
+alto = 600
+azul = 0,0,255
+rojo = 255,0,0
+verde = 0,255,0
+init()
+screen = display.set_mode((ancho,alto))
+Boton1 = [300,100]
+Color1 = [(247,139,82),(247,198,173)]
+Tam = [200,45]
+Boton2 = [300,200]
+Boton3 = [300,300]
+fuente = font.SysFont("Arial",15)
+
+def fade(ancho,alto):
+    fade = screen((ancho,alto))
+
+def texto_boton(msg,color,Botonx,Botony,Ancho,Alto):
+    mensaje,mensajeRect = texto(msg,color)
+    mensajeRect.center = Botonx+(Ancho/2),Botony+(Alto/2)
+    screen.blit(mensaje,mensajeRect)
+
+def boton(texto,screen,estado,posicion,Tam,identidad=None):
+    cursor = mouse.get_pos()
+    click = mouse.get_pressed()
+    if posicion[0] + Tam[0] > cursor[0] > Tam[0] and posicion[1]+Tam[1] > cursor[1] > Tam[1] and posicion[1] + Tam[1] < cursor[1] + Tam[1]:
+        if click[0] == 1:
+            if identidad == 'comienzo':
+                submenu()
+            elif identidad == "config":
+                opciones()
+            elif identidad == "salir":
+                quit()
+        boton = draw.rect(screen,estado[1],(posicion[0], posicion[1],Tam[0],Tam[1]))
+    else:
+        boton = draw.rect(screen, estado[0], (posicion[0], posicion[1], Tam[0], Tam[1]))
+    texto_boton(texto,(0,0,0),posicion[0],posicion[1],Tam[0],Tam[1])
+    return boton
+
+def Menu():
+    IntroJuego = True
+    while IntroJuego:
+        screen.fill((255,255,255))
+        draw.rect(screen, (0,0,0), (287, 95, 225, 55))
+        draw.rect(screen, (0, 0, 0), (287, 195, 225, 55))
+        draw.rect(screen, (0, 0, 0), (287, 295, 225, 55))
+        boton("Jugar",screen,Color1,Boton1,Tam,identidad='comienzo')
+        boton("Opciones",screen,Color1, Boton2, Tam,identidad='config')
+        boton("Salir",screen,Color1, Boton3,Tam,identidad='salir')
+        for i in event.get():
+            if i.type == QUIT:
+                quit()
+
+        display.update()
+def texto(texto,color):
+    mensaje = fuente.render(texto,True,color)
+    return mensaje,mensaje.get_rect()
+
+def mensaje(msg,color,coordenada_y = 0):
+    mensaje,mensajeRect = texto(msg,color)
+    mensajeRect.center = (ancho/2),(alto/2) + coordenada_y
+    screen.blit(mensaje,mensajeRect)
+
+def opciones():
+    atras = True
+    while atras:
+        for i in event.get():
+            if i.type == QUIT:
+                quit()
+        screen.fill((255,255,255))
+        boton("volver",screen,Color1,Boton1,Tam,identidad='bruh')
+        mensaje("bruh",verde,-100)
+        display.update()
+
+def submenu():
+    salir = True
+    while salir:
+        screen.fill((255, 255, 255))
+        for i in event.get():
+            if i.type == QUIT:
+                quit()
+        mensaje("bruh", verde, -100)
+        display.update()
+Menu()
